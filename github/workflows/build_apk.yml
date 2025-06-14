@@ -1,0 +1,39 @@
+name: Build APK for FUTBConnect
+
+on: workflow_dispatch:
+
+jobs: build: runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v3
+
+  - name: Set up Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: '3.10'
+
+  - name: Install Buildozer & dependencies
+    run: |
+      sudo apt update
+      sudo apt install -y zip unzip openjdk-17-jdk python3-pip python3-setuptools git build-essential libncurses5 libstdc++6 zlib1g zlib1g-dev libffi-dev libssl-dev libsqlite3-dev libbz2-dev
+      pip install --upgrade pip Cython virtualenv
+      pip install buildozer
+
+  - name: Initialize Buildozer project
+    run: |
+      unzip FUTBConnect_Kivy_BuildReady.zip -d futbconnect
+      cd futbconnect
+      buildozer init || true
+
+  - name: Build APK
+    run: |
+      cd futbconnect
+      echo "[app]\npackage.name = futbconnect\npackage.domain = org.futbconnect\nsource.dir = .\nsource.include_exts = py,kv\nversion = 1.0\nrequirements = python3,kivy\norientation = portrait\nfullscreen = 0\nandroid.api = 31\nandroid.archs = armeabi-v7a\nandroid.permissions = INTERNET\n[buildozer]\nlog_level = 2\nwarn_on_root = 1" > buildozer.spec
+      buildozer android debug
+
+  - name: Upload APK Artifact
+    uses: actions/upload-artifact@v3
+    with:
+      name: futbconnect-apk
+      path: futbconnect/bin/*.apk
