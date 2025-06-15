@@ -27,8 +27,9 @@ jobs:
        mkdir -p $HOME/android-sdk/cmdline-tools
        cd $HOME/android-sdk/cmdline-tools
        curl -O https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
-       unzip commandlinetools-linux-*.zip -d cmdline-tools
-       mv cmdline-tools cmdline-tools/latest
+       unzip commandlinetools-linux-*.zip -d temp-tools
+       mkdir -p $HOME/android-sdk/cmdline-tools/latest
+       mv temp-tools/cmdline-tools/* $HOME/android-sdk/cmdline-tools/latest/
        export ANDROID_HOME=$HOME/android-sdk
        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
        yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
