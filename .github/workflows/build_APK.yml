@@ -27,7 +27,8 @@ jobs:
        mkdir -p $HOME/android-sdk/cmdline-tools
        cd $HOME/android-sdk/cmdline-tools
        curl -O https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
-       unzip commandlinetools-linux-*.zip -d latest
+       unzip commandlinetools-linux-*.zip -d cmdline-tools
+       mv cmdline-tools cmdline-tools/latest
        export ANDROID_HOME=$HOME/android-sdk
        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
        yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
@@ -35,9 +36,9 @@ jobs:
     - name: Set environment variables
       run: |
        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-       echo "PATH=$PATH:$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_ENV
-    - name: Initialize Buildozer project
-      run: |
+       echo "PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_ENV- 
+       name: Initialize Buildozer project
+       run: |
        unzip FUTBConnect_Kivy_BuildReady.zip -d futbconnect
        cd futbconnect
        buildozer init || true
